@@ -1,0 +1,79 @@
+# examples/Fastfile — 프로젝트에 맞게 수정해서 fastlane/Fastfile로 복사
+# 필요한 값: YourApp.xcodeproj / 스킴 이름 / fastlane/.env (env.example 참고)
+
+default_platform(:mac)
+
+platform :mac do
+  desc "아카이브 + 바이너리 업로드만"
+  lane :upload do
+    asc_key
+    build
+    upload_to_app_store(
+      platform: "osx",
+      skip_metadata: true,
+      skip_screenshots: true,
+      precheck_include_in_app_purchases: false,
+      force: true
+    )
+  end
+
+  desc "아카이브 + 업로드 + 메타데이터 + 심사 제출 (자동 출시)"
+  lane :release do
+    asc_key
+    build
+    upload_to_app_store(
+      platform: "osx",
+      app_version: get_version_number(xcodeproj: "YourApp.xcodeproj", target: "YourApp"),
+      skip_screenshots: true,
+      precheck_include_in_app_purchases: false,  # API 키 인증은 IAP 프리체크 미지원
+      force: true,                               # HTML 미리보기 확인 생략
+      submit_for_review: true,
+      automatic_release: true,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false  # 자체 암호화 없을 때
+      }
+    )
+  end
+
+  desc "빌드 업로드 없이 스크린샷 반영 + 심사 제출만"
+  lane :submit do
+    asc_key
+    upload_to_app_store(
+      platform: "osx",
+      app_version: get_version_number(xcodeproj: "YourApp.xcodeproj", target: "YourApp"),
+      build_number: get_build_number(xcodeproj: "YourApp.xcodeproj"),
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: false,
+      overwrite_screenshots: false,
+      precheck_include_in_app_purchases: false,
+      force: true,
+      submit_for_review: true,
+      automatic_release: true,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false
+      }
+    )
+  end
+
+  private_lane :asc_key do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("ASC_KEY_PATH", "fastlane/AuthKey.p8")
+    )
+  end
+
+  private_lane :build do
+    build_mac_app(
+      project: "YourApp.xcodeproj",
+      scheme: "YourApp",
+      export_method: "app-store",
+      output_directory: "fastlane/build",
+      clean: true,
+      xcargs: "-allowProvisioningUpdates"
+    )
+  end
+end
