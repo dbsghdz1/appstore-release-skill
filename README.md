@@ -2,7 +2,7 @@
 
 **English** | [한국어](README.ko.md)
 
-A [Claude Code](https://claude.com/claude-code) skill that automates macOS App Store releases end-to-end: **archive → sign → upload → multi-language metadata → screenshots → submit for review → auto-release** — and, more importantly, recovers from the App Store Connect errors that usually stop an automated release halfway.
+A [Claude Code](https://claude.com/claude-code) skill that automates macOS and iOS App Store releases end-to-end: **archive → sign → upload → multi-language metadata → screenshots → submit for review → auto-release** — and, more importantly, recovers from the App Store Connect errors that usually stop an automated release halfway.
 
 ## What is this?
 
@@ -88,7 +88,7 @@ examples/
 
 ## Scope & notes
 
-- Lanes are written for **macOS apps** (`build_mac_app`, `platform: "osx"`). The structure adapts to iOS by switching to `build_app` and `platform: "ios"`; the error playbook and `asc` CLI are platform-agnostic.
+- **Both macOS and iOS are supported**: `examples/Fastfile` ships `platform :mac` and `platform :ios` blocks (`fastlane mac release` / `fastlane ios release`), and iOS additionally gets a `beta` lane for TestFlight. The error playbook and `asc` CLI are platform-agnostic (the StoreKit purchase-sheet entry is macOS menu-bar specific).
 - The ASC API key grants broad account access — keep `.p8`/`.env` gitignored (the example `.gitignore` entries are in `env.example`'s comments) and prefer a dedicated key you can revoke.
 - Nothing here stores or transmits your credentials anywhere except directly to Apple's API.
 

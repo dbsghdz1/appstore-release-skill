@@ -1,15 +1,15 @@
 ---
 name: appstore-release
-description: Release macOS apps to the App Store with fastlane (archive → upload → metadata → submit for review). Use for "release to the App Store", "submit for review", "ship it", resubmissions, or canceling a review. Includes a battle-tested App Store Connect error playbook.
+description: Release macOS/iOS apps to the App Store with fastlane (archive → upload → metadata → submit for review). Use for "release to the App Store", "submit for review", "ship it", resubmissions, or canceling a review. Includes a battle-tested App Store Connect error playbook.
 ---
 
-# Automated App Store Release (macOS)
+# Automated App Store Release (macOS & iOS)
 
 Automates everything from archive to review submission using fastlane plus an ASC API tool. The core value is the error playbook — every entry was hit in a real release.
 
 ## 0. Preflight
 
-1. Does the project have `fastlane/Fastfile`? If not, copy `examples/Fastfile` from this skill's repository and adapt it (three lanes — release/upload/submit — plus the metadata folder layout).
+1. Does the project have `fastlane/Fastfile`? If not, copy `examples/Fastfile` from this skill's repository and adapt it — it contains both `platform :mac` and `platform :ios` blocks (release/upload/submit lanes, iOS also gets `beta` for TestFlight) plus the metadata folder layout.
 2. Confirm `fastlane/.env` has `ASC_KEY_ID` / `ASC_ISSUER_ID` and `fastlane/AuthKey.p8` exists (see `examples/env.example`). ASC API keys are team-wide, so a key from another project on the same account works — it must have the **App Manager** role (Developer-role keys can upload but cannot edit metadata or submit).
 3. Check `git status` is clean and the project builds.
 
@@ -42,9 +42,11 @@ Run from the project root and it auto-loads `fastlane/.env`.
 ## 3. Run
 
 ```bash
+# use `mac` or `ios` depending on the target platform
 fastlane mac release   # archive + upload + metadata + submit + auto-release
 fastlane mac upload    # build upload only
 fastlane mac submit    # screenshots + submit only, using the already-uploaded build
+fastlane ios beta      # iOS only: push a build to TestFlight
 ```
 
 - These take a while — run in the background and wait for completion.

@@ -2,7 +2,7 @@
 
 [English](README.md) | **한국어**
 
-macOS 앱의 App Store 배포를 처음부터 끝까지 자동화하는 [Claude Code](https://claude.com/claude-code) 스킬입니다: **아카이브 → 서명 → 업로드 → 다국어 메타데이터 → 스크린샷 → 심사 제출 → 자동 출시**. 그리고 더 중요한 것 — 자동 배포를 중간에 멈춰 세우는 App Store Connect 오류들을 스스로 복구합니다.
+macOS·iOS 앱의 App Store 배포를 처음부터 끝까지 자동화하는 [Claude Code](https://claude.com/claude-code) 스킬입니다: **아카이브 → 서명 → 업로드 → 다국어 메타데이터 → 스크린샷 → 심사 제출 → 자동 출시**. 그리고 더 중요한 것 — 자동 배포를 중간에 멈춰 세우는 App Store Connect 오류들을 스스로 복구합니다.
 
 ## 이게 뭔가요?
 
@@ -88,7 +88,7 @@ examples/
 
 ## 범위와 참고
 
-- lane은 **macOS 앱** 기준입니다 (`build_mac_app`, `platform: "osx"`). iOS는 `build_app` + `platform: "ios"`로 바꾸면 같은 구조가 적용되고, 에러 플레이북과 `asc` CLI는 플랫폼 무관.
+- **macOS와 iOS 둘 다 지원합니다**: `examples/Fastfile`에 `platform :mac`·`platform :ios` 블록이 함께 들어 있어요 (`fastlane mac release` / `fastlane ios release`). iOS에는 TestFlight용 `beta` lane도 추가. 에러 플레이북과 `asc` CLI는 플랫폼 무관 (StoreKit 결제 시트 항목만 맥 메뉴바 앱 한정).
 - ASC API 키는 계정 전반의 권한을 가지니 `.p8`/`.env`를 반드시 gitignore하고, 필요 시 폐기할 수 있는 전용 키를 쓰세요.
 - 이 도구는 자격 증명을 Apple API 외 어디에도 저장·전송하지 않습니다.
 
